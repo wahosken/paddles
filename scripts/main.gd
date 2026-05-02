@@ -124,13 +124,13 @@ func _on_enemy_scored():
 func show_point_pause(message: String):
 	game_state = GameState.POINT_PAUSE
 	ball.reset_ball()
-	message_label.text = message + "\nPress something to start next round."
+	message_label.text = message + "\nPress anywhere to start next round."
 	message_label.visible = true
 
 func show_game_over(message: String):
 	game_state = GameState.GAME_OVER
 	ball.reset_ball()
-	message_label.text = message + "\nPress something to return to start."
+	message_label.text = message + "\nPress anywhere to start over."
 	message_label.visible = true
 
 func reset_game():

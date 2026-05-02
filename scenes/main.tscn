@@ -147,7 +147,7 @@ stream = ExtResource("11_a8y0u")
 
 [node name="PaddleHitSound" type="AudioStreamPlayer" parent="." unique_id=1287392607]
 stream = ExtResource("11_trceg")
-volume_db = -5.474
+volume_db = -9.869
 
 [node name="WinSound" type="AudioStreamPlayer" parent="." unique_id=1883792143]
 stream = ExtResource("12_a8y0u")
