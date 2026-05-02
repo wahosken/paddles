@@ -1,0 +1,137 @@
+[gd_scene format=3 uid="uid://bl3o4n17bfakr"]
+
+[ext_resource type="Script" uid="uid://bcom6jtbwd3wj" path="res://scripts/main.gd" id="1_jyhfs"]
+[ext_resource type="Script" uid="uid://cjqq232kh4s01" path="res://scripts/player_paddle.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://b34vt0aarky88" path="res://scripts/enemy_paddle.gd" id="2_0wfyh"]
+[ext_resource type="Script" uid="uid://d15e6kqf502nj" path="res://scripts/ball.gd" id="3_sugp2"]
+[ext_resource type="Texture2D" uid="uid://dhl1opebyivva" path="res://assets/ball.png" id="5_o6xl0"]
+[ext_resource type="Texture2D" uid="uid://bx0yd48yxl8ir" path="res://assets/up.png" id="5_tefeu"]
+[ext_resource type="Texture2D" uid="uid://dj2i3mrhx3cs" path="res://assets/down.png" id="6_o6xl0"]
+[ext_resource type="Script" uid="uid://dbqu0tuhw71ux" path="res://scripts/ui.gd" id="6_tipki"]
+[ext_resource type="Texture2D" uid="uid://ds3wvwffw0icl" path="res://assets/background.png" id="9_85g3d"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
+size = Vector2(10, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
+
+[node name="Main" type="Node2D" unique_id=377735369]
+script = ExtResource("1_jyhfs")
+
+[node name="PlayerPaddle" type="Area2D" parent="." unique_id=366705098 groups=["paddles"]]
+position = Vector2(45, 224)
+script = ExtResource("1_o5qli")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerPaddle" unique_id=171351501]
+shape = SubResource("RectangleShape2D_7dm0k")
+
+[node name="ColorRect" type="ColorRect" parent="PlayerPaddle" unique_id=2129990431]
+offset_left = -5.0
+offset_top = -50.0
+offset_right = 5.0
+offset_bottom = 50.0
+
+[node name="EnemyPaddle" type="Area2D" parent="." unique_id=1513836577 groups=["paddles"]]
+position = Vector2(755, 225)
+script = ExtResource("2_0wfyh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyPaddle" unique_id=1662846321]
+shape = SubResource("RectangleShape2D_7dm0k")
+
+[node name="ColorRect" type="ColorRect" parent="EnemyPaddle" unique_id=967296038]
+offset_left = -5.0
+offset_top = -50.0
+offset_right = 5.0
+offset_bottom = 50.0
+
+[node name="Ball" type="Area2D" parent="." unique_id=2092015167]
+position = Vector2(400, 220)
+script = ExtResource("3_sugp2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball" unique_id=1691946696]
+position = Vector2(400, 225)
+shape = SubResource("RectangleShape2D_jyhfs")
+
+[node name="BallVisual" type="Sprite2D" parent="Ball" unique_id=1308677849]
+scale = Vector2(2.0000017, 1.9375004)
+texture = ExtResource("5_o6xl0")
+
+[node name="TopWallVisual" type="ColorRect" parent="." unique_id=659604384]
+offset_right = 800.0
+offset_bottom = 5.0
+color = Color(0.796243, 0.796243, 0.796243, 1)
+
+[node name="BottomWallVisual" type="ColorRect" parent="." unique_id=1716784920]
+offset_top = 444.0
+offset_right = 800.0
+offset_bottom = 449.0
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1196932859]
+
+[node name="PlayerScoreLabel" type="Label" parent="UI" unique_id=93013552]
+offset_left = 300.0
+offset_top = 30.0
+offset_right = 340.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="EnemyScoreLabel" type="Label" parent="UI" unique_id=1162660198]
+offset_left = 480.0
+offset_top = 30.0
+offset_right = 520.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="MessageLabel" type="Label" parent="UI" unique_id=647818161]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -169.0
+offset_top = -93.0
+offset_right = 169.0
+offset_bottom = 19.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "Press something to start."
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="UI" unique_id=47440669]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 800.0
+offset_bottom = 449.0
+script = ExtResource("6_tipki")
+
+[node name="Up" type="TouchScreenButton" parent="UI/Control" unique_id=432366907]
+position = Vector2(50, 360)
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("5_tefeu")
+texture_pressed = ExtResource("5_tefeu")
+action = "move_up"
+
+[node name="Down" type="TouchScreenButton" parent="UI/Control" unique_id=1970365311]
+position = Vector2(700, 360)
+scale = Vector2(1.5, 1.5)
+texture_normal = ExtResource("6_o6xl0")
+texture_pressed = ExtResource("6_o6xl0")
+action = "move_down"
+
+[node name="CenterLine" type="Line2D" parent="." unique_id=996489648]
+points = PackedVector2Array(400, 0, 400, 450)
+width = 2.0
+default_color = Color(1, 1, 1, 0.3254902)
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1206421104]
+z_index = -1
+position = Vector2(400, 225)
+texture = ExtResource("9_85g3d")
+
+[connection signal="pressed" from="UI/Control/Up" to="UI" method="_on_up_pressed"]
+[connection signal="released" from="UI/Control/Up" to="UI" method="_on_up_released"]
+[connection signal="pressed" from="UI/Control/Down" to="UI" method="_on_down_pressed"]
+[connection signal="released" from="UI/Control/Down" to="UI" method="_on_down_released"]
