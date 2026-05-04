@@ -19,11 +19,19 @@ var ball: Node2D
 var paddle_velocity := Vector2.ZERO
 var previous_position := Vector2.ZERO
 
+var main: Node
+
 func _ready():
 	ball = get_tree().current_scene.get_node("Ball")
+	main = get_tree().current_scene
 	previous_position = position
 
 func _process(delta):
+	if main.is_paused:
+		paddle_velocity = Vector2.ZERO
+		previous_position = position
+		return
+	
 	if ball == null:
 		return
 

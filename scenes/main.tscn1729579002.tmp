@@ -8,20 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bx0yd48yxl8ir" path="res://assets/up.png" id="5_tefeu"]
 [ext_resource type="Texture2D" uid="uid://dj2i3mrhx3cs" path="res://assets/down.png" id="6_o6xl0"]
 [ext_resource type="Script" uid="uid://dbqu0tuhw71ux" path="res://scripts/ui.gd" id="6_tipki"]
-[ext_resource type="Texture2D" uid="uid://dp8u3iduq3sed" path="res://assets/up_pressed.png" id="8_jbj1t"]
 [ext_resource type="Texture2D" uid="uid://ds3wvwffw0icl" path="res://assets/background.png" id="9_85g3d"]
-[ext_resource type="AudioStream" uid="uid://dqviipqyuxwge" path="res://audio/paddles audio_score.wav" id="10_eb6dy"]
-[ext_resource type="Texture2D" uid="uid://dnvpho26evxkp" path="res://assets/down_pressed.png" id="10_muem4"]
-[ext_resource type="AudioStream" uid="uid://buwclg75d5hx0" path="res://audio/paddles audio_enemy hit.wav" id="11_a8y0u"]
-[ext_resource type="Texture2D" uid="uid://ce1cgv0ntp2tt" path="res://assets/left.png" id="11_gqmmt"]
-[ext_resource type="AudioStream" uid="uid://dudptqf1snvnw" path="res://audio/paddles audio_hit.wav" id="11_trceg"]
-[ext_resource type="AudioStream" uid="uid://2vht00sp5rwh" path="res://audio/paddles audio_win.wav" id="12_a8y0u"]
-[ext_resource type="Texture2D" uid="uid://b4y2tp8eamp6x" path="res://assets/left_pressed.png" id="12_yc10j"]
-[ext_resource type="Texture2D" uid="uid://n4c8mwxkiinl" path="res://assets/right.png" id="13_jscy8"]
-[ext_resource type="AudioStream" uid="uid://cfscn8g2ecgnd" path="res://audio/paddles audio_lose.wav" id="13_trceg"]
-[ext_resource type="Texture2D" uid="uid://cixk4mdtbmlsn" path="res://assets/right_pressed.png" id="14_pm3ni"]
-[ext_resource type="Texture2D" uid="uid://ckuhfe0o2ybcs" path="res://assets/fullscreen.png" id="15_jscy8"]
-[ext_resource type="Texture2D" uid="uid://nv8iwn3me57w" path="res://assets/fullscreen_pressed.png" id="16_pm3ni"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
 size = Vector2(10, 100)
@@ -70,39 +57,32 @@ scale = Vector2(2.0000017, 1.9375004)
 texture = ExtResource("5_o6xl0")
 
 [node name="TopWallVisual" type="ColorRect" parent="." unique_id=659604384]
-visible = false
 offset_right = 800.0
 offset_bottom = 5.0
 color = Color(0.796243, 0.796243, 0.796243, 1)
 
 [node name="BottomWallVisual" type="ColorRect" parent="." unique_id=1716784920]
-visible = false
 offset_top = 444.0
 offset_right = 800.0
 offset_bottom = 449.0
 
-[node name="GameCamera" type="Camera2D" parent="." unique_id=1232791509]
-position = Vector2(400, 225)
-
 [node name="UI" type="CanvasLayer" parent="." unique_id=1196932859]
 
 [node name="PlayerScoreLabel" type="Label" parent="UI" unique_id=93013552]
-offset_left = 360.0
-offset_top = 10.0
-offset_right = 400.0
-offset_bottom = 44.0
-theme_override_font_sizes/font_size = 32
+offset_left = 300.0
+offset_top = 30.0
+offset_right = 340.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 24
 text = "0"
-horizontal_alignment = 1
 
 [node name="EnemyScoreLabel" type="Label" parent="UI" unique_id=1162660198]
-offset_left = 400.0
-offset_top = 10.0
-offset_right = 440.0
-offset_bottom = 44.0
-theme_override_font_sizes/font_size = 32
+offset_left = 480.0
+offset_top = 30.0
+offset_right = 520.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 24
 text = "0"
-horizontal_alignment = 1
 
 [node name="MessageLabel" type="Label" parent="UI" unique_id=647818161]
 anchors_preset = 8
@@ -117,6 +97,7 @@ offset_bottom = 19.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 28
+text = "Press something to start."
 horizontal_alignment = 1
 
 [node name="Control" type="Control" parent="UI" unique_id=47440669]
@@ -127,73 +108,30 @@ offset_bottom = 449.0
 script = ExtResource("6_tipki")
 
 [node name="Up" type="TouchScreenButton" parent="UI/Control" unique_id=432366907]
-position = Vector2(50, 280)
-scale = Vector2(2, 2)
+position = Vector2(50, 360)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("5_tefeu")
-texture_pressed = ExtResource("8_jbj1t")
+texture_pressed = ExtResource("5_tefeu")
 action = "move_up"
 
 [node name="Down" type="TouchScreenButton" parent="UI/Control" unique_id=1970365311]
-position = Vector2(50, 360)
-scale = Vector2(2, 2)
+position = Vector2(700, 360)
+scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("6_o6xl0")
-texture_pressed = ExtResource("10_muem4")
+texture_pressed = ExtResource("6_o6xl0")
 action = "move_down"
-
-[node name="Left" type="TouchScreenButton" parent="UI/Control" unique_id=2095989663]
-position = Vector2(620, 330)
-scale = Vector2(2, 2)
-texture_normal = ExtResource("11_gqmmt")
-texture_pressed = ExtResource("12_yc10j")
-action = "move_left"
-
-[node name="Right" type="TouchScreenButton" parent="UI/Control" unique_id=410607548]
-position = Vector2(700, 330)
-scale = Vector2(2, 2)
-texture_normal = ExtResource("13_jscy8")
-texture_pressed = ExtResource("14_pm3ni")
-action = "move_right"
-
-[node name="Fullscreen_Button" type="TextureButton" parent="UI/Control" unique_id=77236194]
-layout_mode = 0
-offset_left = 730.0
-offset_top = 20.0
-offset_right = 810.0
-offset_bottom = 100.0
-texture_normal = ExtResource("15_jscy8")
-texture_pressed = ExtResource("16_pm3ni")
 
 [node name="CenterLine" type="Line2D" parent="." unique_id=996489648]
 points = PackedVector2Array(400, 0, 400, 450)
 width = 2.0
-default_color = Color(1, 1, 1, 0.1882353)
+default_color = Color(1, 1, 1, 0.3254902)
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1206421104]
 z_index = -1
 position = Vector2(400, 225)
 texture = ExtResource("9_85g3d")
 
-[node name="ScoreSound" type="AudioStreamPlayer" parent="." unique_id=86895206]
-stream = ExtResource("10_eb6dy")
-
-[node name="EnemyScoreSound" type="AudioStreamPlayer" parent="." unique_id=1406049005]
-stream = ExtResource("11_a8y0u")
-
-[node name="PaddleHitSound" type="AudioStreamPlayer" parent="." unique_id=1287392607]
-stream = ExtResource("11_trceg")
-volume_db = -9.869
-
-[node name="WinSound" type="AudioStreamPlayer" parent="." unique_id=1883792143]
-stream = ExtResource("12_a8y0u")
-
-[node name="LoseSound" type="AudioStreamPlayer" parent="." unique_id=657066307]
-stream = ExtResource("13_trceg")
-
 [connection signal="pressed" from="UI/Control/Up" to="UI" method="_on_up_pressed"]
 [connection signal="released" from="UI/Control/Up" to="UI" method="_on_up_released"]
 [connection signal="pressed" from="UI/Control/Down" to="UI" method="_on_down_pressed"]
 [connection signal="released" from="UI/Control/Down" to="UI" method="_on_down_released"]
-[connection signal="pressed" from="UI/Control/Left" to="UI" method="_on_up_pressed"]
-[connection signal="released" from="UI/Control/Left" to="UI" method="_on_up_released"]
-[connection signal="pressed" from="UI/Control/Right" to="UI" method="_on_down_pressed"]
-[connection signal="released" from="UI/Control/Right" to="UI" method="_on_down_released"]

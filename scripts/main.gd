@@ -11,8 +11,33 @@ const SCORE_CELL_HEIGHT := 32
 
 var score_textures: Array[AtlasTexture] = []
 
+var background_textures: Array[Texture2D] = [
+	preload("res://assets/backgrounds/classic.png"),
+	preload("res://assets/backgrounds/forest.png"),
+	preload("res://assets/backgrounds/royal.png"),
+	preload("res://assets/backgrounds/wahosken.png")
+]
+
 @onready var player_score_image: TextureRect = $UI/PlayerScoreImage
 @onready var enemy_score_image: TextureRect = $UI/EnemyScoreImage
+
+@onready var pause_button: TextureButton = $UI/PauseButton
+@onready var pause_menu: Control = $UI/PauseMenu
+@onready var resume_button: Button = $UI/PauseMenu/PauseMenuContent/ResumeButton
+@onready var restart_button: Button = $UI/PauseMenu/PauseMenuContent/RestartButton
+@onready var background_option_button: OptionButton = $UI/PauseMenu/PauseMenuContent/BackgroundOptionButton
+@onready var mute_button: Button = $UI/PauseMenu/PauseMenuContent/MuteButton
+@onready var control_option_button: OptionButton = $UI/PauseMenu/PauseMenuContent/ControlOptionButton
+@onready var volume_slider: HSlider = $UI/PauseMenu/PauseMenuContent/VolumeSlider
+
+@onready var background: Sprite2D = $Background
+
+@onready var virtual_joystick: Control = $UI/TouchControls/VirtualJoystick
+@onready var touch_controls: Control = $UI/TouchControls
+@onready var up: TouchScreenButton = $UI/TouchControls/Up
+@onready var down: TouchScreenButton = $UI/TouchControls/Down
+@onready var left: TouchScreenButton = $UI/TouchControls/Left
+@onready var right: TouchScreenButton = $UI/TouchControls/Right
 
 enum GameState {
 	START_SCREEN,
@@ -21,6 +46,13 @@ enum GameState {
 	GAME_OVER
 }
 
+enum ControlMode {
+	BUTTONS,
+	JOYSTICK
+}
+
+var control_mode: ControlMode = ControlMode.BUTTONS
+
 var game_state: GameState = GameState.START_SCREEN
 var player_score := 0
 var enemy_score := 0
@@ -28,10 +60,17 @@ var enemy_score := 0
 var shake_time := 0.0
 var camera_start_position := Vector2.ZERO
 
+var is_paused := false
+var was_ball_active_before_pause := false
+var is_muted := false
+
+var using_touch_controls := false
+
+var master_volume := 80.0
+
 @onready var ball = $Ball
-@onready var player_score_label = $UI/PlayerScoreLabel
-@onready var enemy_score_label = $UI/EnemyScoreLabel
 @onready var message_label = $UI/MessageLabel
+@onready var controls_label = $UI/ControlsLabel
 @onready var game_camera = $GameCamera
 @onready var score_sound = $ScoreSound
 @onready var win_sound = $WinSound
@@ -41,15 +80,23 @@ var camera_start_position := Vector2.ZERO
 
 func _ready():
 	create_score_textures()
+	setup_pause_menu()
+	_on_volume_changed(master_volume)
+	update_control_visibility()
+	
+	set_default_background()
 	
 	camera_start_position = game_camera.position
 	
 	ball.player_scored.connect(_on_player_scored)
 	ball.enemy_scored.connect(_on_enemy_scored)
 	ball.paddle_hit.connect(_on_paddle_hit)
+	
+	virtual_joystick.joystick_pressed.connect(handle_press_anywhere)
 
 	show_start_screen()
 	update_score_labels()
+
 
 func _process(delta):
 	if shake_time > 0.0:
@@ -65,6 +112,18 @@ func _process(delta):
 		game_camera.position = camera_start_position
 
 func _input(event):
+	if event is InputEventScreenTouch or event is InputEventScreenDrag:
+		using_touch_controls = true
+		update_control_visibility()
+
+	if event is InputEventKey:
+		using_touch_controls = false
+		update_control_visibility()
+		
+	if event.is_action_pressed("pause"):
+		toggle_pause()
+		return
+	
 	if event is InputEventMouseButton and event.pressed:
 		handle_press_anywhere()
 
@@ -87,6 +146,9 @@ func _input(event):
 		handle_press_anywhere()
 
 func handle_press_anywhere():
+	if is_paused:
+		return
+
 	if game_state == GameState.START_SCREEN:
 		start_round()
 	elif game_state == GameState.POINT_PAUSE:
@@ -97,6 +159,8 @@ func handle_press_anywhere():
 
 func show_start_screen():
 	game_state = GameState.START_SCREEN
+	message_label.text = "Press anywhere to start"
+	controls_label.text = "Keyboard: WASD / Arrow Keys\nTouch: Buttons or Joystick\nPause: Esc or Pause Button"
 	message_label.visible = true
 	ball.reset_ball()
 
@@ -179,3 +243,113 @@ func create_score_textures():
 		)
 
 		score_textures.append(atlas_texture)
+
+func setup_pause_menu():
+	pause_button.pressed.connect(toggle_pause)
+	pause_menu.visible = false
+
+	resume_button.pressed.connect(resume_game)
+	restart_button.pressed.connect(restart_match)
+	background_option_button.item_selected.connect(_on_background_selected)
+	control_option_button.item_selected.connect(_on_control_mode_selected)
+	mute_button.pressed.connect(toggle_mute)
+
+	volume_slider.value = master_volume
+	volume_slider.value_changed.connect(_on_volume_changed)
+
+	background_option_button.clear()
+	background_option_button.add_item("Classic", 0)
+	background_option_button.add_item("Forest", 1)
+	background_option_button.add_item("Royal", 2)
+	background_option_button.add_item("Wahosken", 3)
+
+	control_option_button.clear()
+	control_option_button.add_item("Buttons", ControlMode.BUTTONS)
+	control_option_button.add_item("Joystick", ControlMode.JOYSTICK)
+	control_option_button.select(control_mode)
+	
+func toggle_pause():
+	if is_paused:
+		resume_game()
+	else:
+		pause_game()
+
+func pause_game():
+	if game_state != GameState.PLAYING and game_state != GameState.POINT_PAUSE:
+		return
+
+	is_paused = true
+	was_ball_active_before_pause = ball.is_active
+
+	ball.stop_ball()
+	pause_menu.visible = true
+
+func resume_game():
+	is_paused = false
+	pause_menu.visible = false
+
+	if game_state == GameState.PLAYING and was_ball_active_before_pause:
+		ball.start_ball()
+		
+func restart_match():
+	is_paused = false
+	pause_menu.visible = false
+	reset_game()
+	show_start_screen()
+	
+func toggle_mute():
+	is_muted = not is_muted
+
+	var master_bus_index: int = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_mute(master_bus_index, is_muted)
+
+	if is_muted:
+		mute_button.text = "Unmute"
+	else:
+		mute_button.text = "Mute"
+	
+func _on_background_selected(index: int):
+	if index < 0 or index >= background_textures.size():
+		return
+
+	background.texture = background_textures[index]
+
+func set_default_background():
+	background.texture = background_textures[0]
+	background_option_button.select(0)
+
+func update_control_visibility():
+	if not using_touch_controls:
+		touch_controls.visible = false
+		return
+
+	touch_controls.visible = true
+
+	var using_buttons: bool = control_mode == ControlMode.BUTTONS
+
+	up.visible = using_buttons
+	down.visible = using_buttons
+	left.visible = using_buttons
+	right.visible = using_buttons
+
+	virtual_joystick.visible = not using_buttons
+
+func _on_control_mode_selected(index: int):
+	control_mode = index as ControlMode
+	update_control_visibility()
+
+func _on_volume_changed(value: float):
+	master_volume = value
+
+	var master_bus_index: int = AudioServer.get_bus_index("Master")
+
+	if value <= 0.0:
+		AudioServer.set_bus_volume_db(master_bus_index, -80.0)
+	else:
+		var volume_db: float = linear_to_db(value / 100.0)
+		AudioServer.set_bus_volume_db(master_bus_index, volume_db)
+
+	if is_muted and value > 0.0:
+		is_muted = false
+		AudioServer.set_bus_mute(master_bus_index, false)
+		mute_button.text = "Mute"
