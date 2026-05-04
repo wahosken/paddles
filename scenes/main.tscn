@@ -20,6 +20,8 @@
 [ext_resource type="Texture2D" uid="uid://n4c8mwxkiinl" path="res://assets/right.png" id="13_jscy8"]
 [ext_resource type="AudioStream" uid="uid://cfscn8g2ecgnd" path="res://audio/paddles audio_lose.wav" id="13_trceg"]
 [ext_resource type="Texture2D" uid="uid://cixk4mdtbmlsn" path="res://assets/right_pressed.png" id="14_pm3ni"]
+[ext_resource type="Texture2D" uid="uid://ckuhfe0o2ybcs" path="res://assets/fullscreen.png" id="15_jscy8"]
+[ext_resource type="Texture2D" uid="uid://nv8iwn3me57w" path="res://assets/fullscreen_pressed.png" id="16_pm3ni"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
 size = Vector2(10, 100)
@@ -125,32 +127,41 @@ offset_bottom = 449.0
 script = ExtResource("6_tipki")
 
 [node name="Up" type="TouchScreenButton" parent="UI/Control" unique_id=432366907]
-position = Vector2(50, 300)
-scale = Vector2(1.5, 1.5)
+position = Vector2(50, 280)
+scale = Vector2(2, 2)
 texture_normal = ExtResource("5_tefeu")
 texture_pressed = ExtResource("8_jbj1t")
 action = "move_up"
 
 [node name="Down" type="TouchScreenButton" parent="UI/Control" unique_id=1970365311]
 position = Vector2(50, 360)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(2, 2)
 texture_normal = ExtResource("6_o6xl0")
 texture_pressed = ExtResource("10_muem4")
 action = "move_down"
 
 [node name="Left" type="TouchScreenButton" parent="UI/Control" unique_id=2095989663]
-position = Vector2(650, 330)
-scale = Vector2(1.5, 1.5)
+position = Vector2(620, 330)
+scale = Vector2(2, 2)
 texture_normal = ExtResource("11_gqmmt")
 texture_pressed = ExtResource("12_yc10j")
 action = "move_left"
 
 [node name="Right" type="TouchScreenButton" parent="UI/Control" unique_id=410607548]
-position = Vector2(710, 330)
-scale = Vector2(1.5, 1.5)
+position = Vector2(700, 330)
+scale = Vector2(2, 2)
 texture_normal = ExtResource("13_jscy8")
 texture_pressed = ExtResource("14_pm3ni")
 action = "move_right"
+
+[node name="Fullscreen" type="TextureButton" parent="UI/Control" unique_id=77236194]
+layout_mode = 0
+offset_left = 730.0
+offset_top = 20.0
+offset_right = 770.0
+offset_bottom = 60.0
+texture_normal = ExtResource("15_jscy8")
+texture_pressed = ExtResource("16_pm3ni")
 
 [node name="CenterLine" type="Line2D" parent="." unique_id=996489648]
 points = PackedVector2Array(400, 0, 400, 450)
