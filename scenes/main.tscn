@@ -143,14 +143,14 @@ position = Vector2(650, 330)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("11_gqmmt")
 texture_pressed = ExtResource("12_yc10j")
-action = "move_up"
+action = "move_left"
 
 [node name="Right" type="TouchScreenButton" parent="UI/Control" unique_id=410607548]
 position = Vector2(710, 330)
 scale = Vector2(1.5, 1.5)
 texture_normal = ExtResource("13_jscy8")
 texture_pressed = ExtResource("14_pm3ni")
-action = "move_down"
+action = "move_right"
 
 [node name="CenterLine" type="Line2D" parent="." unique_id=996489648]
 points = PackedVector2Array(400, 0, 400, 450)
