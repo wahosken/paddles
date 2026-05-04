@@ -8,8 +8,10 @@ const SCREEN_WIDTH := 800.0
 const SCREEN_HEIGHT := 450.0
 
 const BALL_RADIUS := 10.0
-const PADDLE_HALF_WIDTH := 10.0
+const PADDLE_HALF_WIDTH := 5.0
 const PADDLE_HALF_HEIGHT := 50.0
+
+const SEPARATION_PADDING := 0.0
 
 var speed := START_SPEED
 var direction := Vector2.ZERO
@@ -72,17 +74,52 @@ func bounce_from_paddle(paddle: Node2D):
 	var normalized_offset: float = clamp(hit_offset / PADDLE_HALF_HEIGHT, -1.0, 1.0)
 
 	if paddle.name == "PlayerPaddle":
-		position.x = paddle.position.x + PADDLE_HALF_WIDTH + BALL_RADIUS + 1.0
+		var safe_x: float = paddle.position.x + PADDLE_HALF_WIDTH + BALL_RADIUS + SEPARATION_PADDING
+		
+		if position.x < safe_x and direction.x < 0.0:
+			position.x = move_toward(position.x, safe_x, 2.0)
+		
 		direction.x = 1.0
 
 	if paddle.name == "EnemyPaddle":
-		position.x = paddle.position.x - PADDLE_HALF_WIDTH - BALL_RADIUS - 1.0
+		var safe_x: float = paddle.position.x - PADDLE_HALF_WIDTH - BALL_RADIUS - SEPARATION_PADDING
+		
+		if position.x > safe_x and direction.x > 0.0:
+			position.x = move_toward(position.x, safe_x, 1.0)
+		
 		direction.x = -1.0
 
-	direction.y = normalized_offset
+	var horizontal_boost: float = 1.0
+
+	if paddle.name == "PlayerPaddle":
+		direction.x = horizontal_boost
+		position.x = paddle.position.x + PADDLE_HALF_WIDTH + BALL_RADIUS + 1.0
+
+	if paddle.name == "EnemyPaddle":
+		direction.x = -horizontal_boost
+		position.x = paddle.position.x - PADDLE_HALF_WIDTH - BALL_RADIUS - 1.0
+
+	var paddle_velocity: Vector2 = Vector2.ZERO
+
+	if "paddle_velocity" in paddle:
+		paddle_velocity = paddle.paddle_velocity
+
+	var vertical_momentum: float = paddle_velocity.y / 350.0
+	var horizontal_momentum: float = paddle_velocity.x / 350.0
+
+	direction.y = normalized_offset + vertical_momentum * 0.4
+
+	if paddle.name == "PlayerPaddle":
+		direction.x = 1.0 + max(horizontal_momentum, 0.0) * 0.35
+
+	if paddle.name == "EnemyPaddle":
+		direction.x = -1.0 + min(horizontal_momentum, 0.0) * 0.35
+
+	direction.y = clamp(direction.y, -1.5, 1.5)
 	direction = direction.normalized()
 
-	speed = min(speed + SPEED_INCREASE, MAX_SPEED)
+	var speed_bonus: float = abs(horizontal_momentum) * 40.0
+	speed = min(speed + SPEED_INCREASE + speed_bonus, MAX_SPEED)
 
 	paddle_hit.emit()
 

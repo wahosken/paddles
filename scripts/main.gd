@@ -70,6 +70,12 @@ func _input(event):
 	if event.is_action_pressed("move_down"):
 		handle_press_anywhere()
 
+	if event.is_action_pressed("move_left"):
+		handle_press_anywhere()
+
+	if event.is_action_pressed("move_right"):
+		handle_press_anywhere()
+
 func handle_press_anywhere():
 	if game_state == GameState.START_SCREEN:
 		start_round()
@@ -81,7 +87,6 @@ func handle_press_anywhere():
 
 func show_start_screen():
 	game_state = GameState.START_SCREEN
-	message_label.text = "Press anywhere to start"
 	message_label.visible = true
 	ball.reset_ball()
 
@@ -124,13 +129,13 @@ func _on_enemy_scored():
 func show_point_pause(message: String):
 	game_state = GameState.POINT_PAUSE
 	ball.reset_ball()
-	message_label.text = message + "\nPress anywhere to start next round."
+	message_label.text = message
 	message_label.visible = true
 
 func show_game_over(message: String):
 	game_state = GameState.GAME_OVER
 	ball.reset_ball()
-	message_label.text = message + "\nPress anywhere to start over."
+	message_label.text = message
 	message_label.visible = true
 
 func reset_game():
