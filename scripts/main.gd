@@ -99,6 +99,9 @@ func _ready():
 
 	show_start_screen()
 	update_score_labels()
+	
+	is_paused = false
+	pause_menu.visible = false
 
 
 func _process(delta):
