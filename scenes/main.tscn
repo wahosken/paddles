@@ -31,6 +31,28 @@ size = Vector2(10, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
 
+[sub_resource type="SystemFont" id="SystemFont_og1vs"]
+
+[sub_resource type="SystemFont" id="SystemFont_2wyq8"]
+
+[sub_resource type="SystemFont" id="SystemFont_vxglm"]
+
+[sub_resource type="SystemFont" id="SystemFont_2f3dj"]
+
+[sub_resource type="SystemFont" id="SystemFont_yq6so"]
+
+[sub_resource type="SystemFont" id="SystemFont_fv21b"]
+
+[sub_resource type="SystemFont" id="SystemFont_tel4y"]
+
+[sub_resource type="SystemFont" id="SystemFont_qkpxi"]
+
+[sub_resource type="SystemFont" id="SystemFont_5q0nq"]
+
+[sub_resource type="SystemFont" id="SystemFont_dgi5k"]
+
+[sub_resource type="SystemFont" id="SystemFont_j8jky"]
+
 [node name="Main" type="Node2D" unique_id=377735369]
 script = ExtResource("1_jyhfs")
 
@@ -118,6 +140,7 @@ offset_right = 169.0
 offset_bottom = 19.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_og1vs")
 theme_override_font_sizes/font_size = 28
 horizontal_alignment = 1
 
@@ -133,6 +156,7 @@ offset_right = 169.00006
 offset_bottom = 187.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_fonts/font = SubResource("SystemFont_2wyq8")
 theme_override_font_sizes/font_size = 16
 horizontal_alignment = 1
 
@@ -218,6 +242,7 @@ offset_left = 325.0
 offset_top = 40.0
 offset_right = 478.0
 offset_bottom = 63.0
+theme_override_fonts/font = SubResource("SystemFont_vxglm")
 theme_override_font_sizes/font_size = 36
 text = "Paddles"
 horizontal_alignment = 1
@@ -240,31 +265,38 @@ alignment = 1
 
 [node name="PauseTitle" type="Label" parent="UI/PauseMenu/PauseMenuContent" unique_id=40696390]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_2f3dj")
 text = "PAUSED"
 horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="UI/PauseMenu/PauseMenuContent" unique_id=1000098638]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_yq6so")
 text = "Resume"
 
 [node name="RestartButton" type="Button" parent="UI/PauseMenu/PauseMenuContent" unique_id=1855843963]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_fv21b")
 text = "Restart"
 
 [node name="BackgroundOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuContent" unique_id=2093625006]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_tel4y")
 alignment = 1
 
 [node name="MuteButton" type="Button" parent="UI/PauseMenu/PauseMenuContent" unique_id=513494723]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_qkpxi")
 text = "Mute"
 
 [node name="ControlOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuContent" unique_id=1372926283]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_5q0nq")
 alignment = 1
 
 [node name="VolumeLabel" type="Label" parent="UI/PauseMenu/PauseMenuContent" unique_id=1095605888]
 layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_dgi5k")
 text = "Volume"
 
 [node name="VolumeSlider" type="HSlider" parent="UI/PauseMenu/PauseMenuContent" unique_id=84117645]
@@ -277,6 +309,7 @@ offset_left = 325.0
 offset_top = 420.0
 offset_right = 478.0
 offset_bottom = 443.0
+theme_override_fonts/font = SubResource("SystemFont_j8jky")
 theme_override_font_sizes/font_size = 12
 text = "Game by Wahosken"
 horizontal_alignment = 1
