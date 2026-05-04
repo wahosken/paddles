@@ -9,6 +9,9 @@ const SCORE_SHEET := preload("res://assets/paddles_font.png")
 const SCORE_CELL_WIDTH := 32
 const SCORE_CELL_HEIGHT := 32
 
+const JOYSTICK_LEFT_POSITION := Vector2(20.0, 280.0)
+const JOYSTICK_RIGHT_POSITION := Vector2(640.0, 280.0)
+
 var score_textures: Array[AtlasTexture] = []
 
 var background_textures: Array[Texture2D] = [
@@ -35,6 +38,7 @@ var background_textures: Array[Texture2D] = [
 
 @onready var background: Sprite2D = $Background
 
+
 @onready var virtual_joystick: Control = $UI/UIHide/TouchControls/VirtualJoystick
 @onready var touch_controls: Control = $UI/UIHide/TouchControls
 @onready var up: TouchScreenButton = $UI/UIHide/TouchControls/Up
@@ -51,7 +55,8 @@ enum GameState {
 
 enum ControlMode {
 	BUTTONS,
-	JOYSTICK
+	JOYSTICK_LEFT,
+	JOYSTICK_RIGHT
 }
 
 var control_mode: ControlMode = ControlMode.BUTTONS
@@ -285,7 +290,8 @@ func setup_pause_menu():
 
 	control_option_button.clear()
 	control_option_button.add_item("Buttons", ControlMode.BUTTONS)
-	control_option_button.add_item("Joystick", ControlMode.JOYSTICK)
+	control_option_button.add_item("Joystick Left", ControlMode.JOYSTICK_LEFT)
+	control_option_button.add_item("Joystick Right", ControlMode.JOYSTICK_RIGHT)
 	control_option_button.select(control_mode)
 	
 func toggle_pause():
@@ -348,13 +354,23 @@ func update_control_visibility():
 	touch_controls.visible = true
 
 	var using_buttons: bool = control_mode == ControlMode.BUTTONS
+	var using_joystick: bool = (
+		control_mode == ControlMode.JOYSTICK_LEFT
+		or control_mode == ControlMode.JOYSTICK_RIGHT
+	)
 
 	up.visible = using_buttons
 	down.visible = using_buttons
 	left.visible = using_buttons
 	right.visible = using_buttons
 
-	virtual_joystick.visible = not using_buttons
+	virtual_joystick.visible = using_joystick
+
+	if control_mode == ControlMode.JOYSTICK_LEFT:
+		virtual_joystick.position = JOYSTICK_LEFT_POSITION
+
+	if control_mode == ControlMode.JOYSTICK_RIGHT:
+		virtual_joystick.position = JOYSTICK_RIGHT_POSITION
 
 func _on_control_mode_selected(index: int):
 	control_mode = index as ControlMode

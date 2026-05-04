@@ -43,10 +43,13 @@ func _process(delta):
 	if Input.is_action_pressed("move_right"):
 		move_direction.x += 1.0
 
-	# Joystick only controls the paddle if joystick mode is active
-	# AND no keyboard/input-map direction is currently being used.
 	if move_direction == Vector2.ZERO:
-		if main.control_mode == main.ControlMode.JOYSTICK:
+		var using_joystick: bool = (
+			main.control_mode == main.ControlMode.JOYSTICK_LEFT
+			or main.control_mode == main.ControlMode.JOYSTICK_RIGHT
+		)
+
+		if using_joystick:
 			if joystick != null:
 				move_direction = joystick.get_input_vector()
 
