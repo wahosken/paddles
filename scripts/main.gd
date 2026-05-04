@@ -5,6 +5,14 @@ const WINNING_SCORE := 3
 const SHAKE_DURATION := 0.20
 const SHAKE_STRENGTH := 2.0
 
+const SCORE_SHEET := preload("res://assets/paddles_font.png")
+const SCORE_CELL_WIDTH := 32
+const SCORE_CELL_HEIGHT := 32
+
+var score_textures: Array[AtlasTexture] = []
+
+@onready var player_score_image: TextureRect = $UI/PlayerScoreImage
+@onready var enemy_score_image: TextureRect = $UI/EnemyScoreImage
 
 enum GameState {
 	START_SCREEN,
@@ -32,6 +40,8 @@ var camera_start_position := Vector2.ZERO
 @onready var enemy_score_sound = $EnemyScoreSound
 
 func _ready():
+	create_score_textures()
+	
 	camera_start_position = game_camera.position
 	
 	ball.player_scored.connect(_on_player_scored)
@@ -145,8 +155,8 @@ func reset_game():
 	ball.reset_ball()
 
 func update_score_labels():
-	player_score_label.text = str(player_score)
-	enemy_score_label.text = str(enemy_score)
+	player_score_image.texture = score_textures[player_score]
+	enemy_score_image.texture = score_textures[enemy_score]
 
 func shake_screen():
 	shake_time = SHAKE_DURATION
@@ -154,3 +164,18 @@ func shake_screen():
 func _on_paddle_hit():
 	paddle_hit_sound.pitch_scale = randf_range(0.9, 1.1)
 	paddle_hit_sound.play()
+
+func create_score_textures():
+	score_textures.clear()
+
+	for i in range(4):
+		var atlas_texture := AtlasTexture.new()
+		atlas_texture.atlas = SCORE_SHEET
+		atlas_texture.region = Rect2(
+			i * SCORE_CELL_WIDTH,
+			0,
+			SCORE_CELL_WIDTH,
+			SCORE_CELL_HEIGHT
+		)
+
+		score_textures.append(atlas_texture)
