@@ -71,6 +71,8 @@ var using_touch_controls := false
 
 var master_volume := 80.0
 
+var can_pause := false
+
 @onready var ball = $Ball
 @onready var message_label: Label = $UI/MessageLabel
 @onready var controls_label: Label = $UI/ControlsLabel
@@ -103,6 +105,9 @@ func _ready():
 	is_paused = false
 	pause_menu.visible = false
 
+	await get_tree().create_timer(0.25).timeout
+	can_pause = true
+
 
 func _process(delta):
 	if shake_time > 0.0:
@@ -121,6 +126,7 @@ func reset_paddles():
 	player_paddle.reset_position()
 
 func _input(event):
+	
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
 		using_touch_controls = true
 		update_control_visibility()
@@ -130,7 +136,8 @@ func _input(event):
 		update_control_visibility()
 		
 	if event.is_action_pressed("pause"):
-		toggle_pause()
+		if can_pause:
+			toggle_pause()
 		return
 	
 	if event is InputEventMouseButton and event.pressed:
@@ -282,6 +289,9 @@ func setup_pause_menu():
 	control_option_button.select(control_mode)
 	
 func toggle_pause():
+	if not can_pause:
+		return
+
 	if is_paused:
 		resume_game()
 	else:
