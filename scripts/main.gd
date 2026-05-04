@@ -18,6 +18,9 @@ var background_textures: Array[Texture2D] = [
 	preload("res://assets/backgrounds/wahosken.png")
 ]
 
+@onready var player_paddle = $PlayerPaddle
+@onready var enemy_paddle = $EnemyPaddle
+
 @onready var player_score_image: TextureRect = $UI/PlayerScoreImage
 @onready var enemy_score_image: TextureRect = $UI/EnemyScoreImage
 
@@ -32,12 +35,12 @@ var background_textures: Array[Texture2D] = [
 
 @onready var background: Sprite2D = $Background
 
-@onready var virtual_joystick: Control = $UI/TouchControls/VirtualJoystick
-@onready var touch_controls: Control = $UI/TouchControls
-@onready var up: TouchScreenButton = $UI/TouchControls/Up
-@onready var down: TouchScreenButton = $UI/TouchControls/Down
-@onready var left: TouchScreenButton = $UI/TouchControls/Left
-@onready var right: TouchScreenButton = $UI/TouchControls/Right
+@onready var virtual_joystick: Control = $UI/UIHide/TouchControls/VirtualJoystick
+@onready var touch_controls: Control = $UI/UIHide/TouchControls
+@onready var up: TouchScreenButton = $UI/UIHide/TouchControls/Up
+@onready var down: TouchScreenButton = $UI/UIHide/TouchControls/Down
+@onready var left: TouchScreenButton = $UI/UIHide/TouchControls/Left
+@onready var right: TouchScreenButton = $UI/UIHide/TouchControls/Right
 
 enum GameState {
 	START_SCREEN,
@@ -69,8 +72,8 @@ var using_touch_controls := false
 var master_volume := 80.0
 
 @onready var ball = $Ball
-@onready var message_label = $UI/MessageLabel
-@onready var controls_label = $UI/ControlsLabel
+@onready var message_label: Label = $UI/MessageLabel
+@onready var controls_label: Label = $UI/ControlsLabel
 @onready var game_camera = $GameCamera
 @onready var score_sound = $ScoreSound
 @onready var win_sound = $WinSound
@@ -110,6 +113,9 @@ func _process(delta):
 		game_camera.position = camera_start_position + random_offset
 	else:
 		game_camera.position = camera_start_position
+
+func reset_paddles():
+	player_paddle.reset_position()
 
 func _input(event):
 	if event is InputEventScreenTouch or event is InputEventScreenDrag:
@@ -162,11 +168,13 @@ func show_start_screen():
 	message_label.text = "Press anywhere to start"
 	controls_label.text = "Keyboard: WASD / Arrow Keys\nTouch: Buttons or Joystick\nPause: Esc or Pause Button"
 	message_label.visible = true
+	controls_label.visible = true
 	ball.reset_ball()
 
 func start_round():
 	game_state = GameState.PLAYING
 	message_label.visible = false
+	controls_label.visible = false
 	ball.start_ball()
 
 func _on_player_scored():
@@ -209,7 +217,8 @@ func show_point_pause(message: String):
 func show_game_over(message: String):
 	game_state = GameState.GAME_OVER
 	ball.reset_ball()
-	message_label.text = message
+	reset_paddles()
+	message_label.text = message + ""
 	message_label.visible = true
 
 func reset_game():
@@ -217,6 +226,7 @@ func reset_game():
 	enemy_score = 0
 	update_score_labels()
 	ball.reset_ball()
+	reset_paddles()
 
 func update_score_labels():
 	player_score_image.texture = score_textures[player_score]
@@ -275,21 +285,20 @@ func toggle_pause():
 		pause_game()
 
 func pause_game():
-	if game_state != GameState.PLAYING and game_state != GameState.POINT_PAUSE:
-		return
-
 	is_paused = true
 	was_ball_active_before_pause = ball.is_active
 
-	ball.stop_ball()
+	if was_ball_active_before_pause:
+		ball.pause_ball()
+
 	pause_menu.visible = true
 
 func resume_game():
 	is_paused = false
 	pause_menu.visible = false
 
-	if game_state == GameState.PLAYING and was_ball_active_before_pause:
-		ball.start_ball()
+	if was_ball_active_before_pause:
+		ball.resume_ball()
 		
 func restart_match():
 	is_paused = false

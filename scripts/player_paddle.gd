@@ -8,6 +8,8 @@ const PADDLE_HALF_HEIGHT := 50.0
 const MIN_X := 20.0
 const MAX_X := 380.0
 
+const DEFAULT_POSITION := Vector2(45.0, 224.0)
+
 var move_direction := Vector2.ZERO
 var paddle_velocity := Vector2.ZERO
 var previous_position := Vector2.ZERO
@@ -17,7 +19,7 @@ var joystick: Node
 
 func _ready():
 	main = get_tree().current_scene
-	joystick = main.get_node("UI/TouchControls/VirtualJoystick")
+	joystick = main.get_node("UI/UIHide/TouchControls/VirtualJoystick")
 	previous_position = position
 
 func _process(delta):
@@ -57,4 +59,9 @@ func _process(delta):
 	position.y = clamp(position.y, PADDLE_HALF_HEIGHT, SCREEN_HEIGHT - PADDLE_HALF_HEIGHT)
 	
 	paddle_velocity = (position - previous_position) / delta
+	previous_position = position
+
+func reset_position():
+	position = DEFAULT_POSITION
+	paddle_velocity = Vector2.ZERO
 	previous_position = position

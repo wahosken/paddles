@@ -148,3 +148,9 @@ func reset_ball():
 	position = Vector2(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT / 2.0)
 	speed = START_SPEED
 	stop_ball()
+
+func pause_ball():
+	is_active = false
+
+func resume_ball():
+	is_active = true
