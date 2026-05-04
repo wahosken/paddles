@@ -1,6 +1,6 @@
 extends Control
 
-@onready var fullscreen_button: TextureButton = $FullscreenButton
+@onready var fullscreen_button: TextureButton = $Fullscreen_Button
 
 func _ready() -> void:
 	hide()

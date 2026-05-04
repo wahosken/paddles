@@ -156,11 +156,10 @@ action = "move_right"
 
 [node name="Fullscreen_Button" type="TextureButton" parent="UI/Control" unique_id=77236194]
 layout_mode = 0
-offset_left = 700.0
+offset_left = 730.0
 offset_top = 20.0
-offset_right = 740.0
-offset_bottom = 60.0
-scale = Vector2(1.5, 1.5)
+offset_right = 810.0
+offset_bottom = 100.0
 texture_normal = ExtResource("15_jscy8")
 texture_pressed = ExtResource("16_pm3ni")
 
