@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dyox5nbk8qs74"
-path="res://.godot/imported/Royal.png-1daabfa540daa9a80fe80c3b439250a1.ctex"
+uid="uid://lcu885rgbrtt"
+path="res://.godot/imported/royal.png-40d4e6a139bf8f72e939908b522ca276.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/backgrounds/Royal.png"
-dest_files=["res://.godot/imported/Royal.png-1daabfa540daa9a80fe80c3b439250a1.ctex"]
+source_file="res://assets/backgrounds/royal.png"
+dest_files=["res://.godot/imported/royal.png-40d4e6a139bf8f72e939908b522ca276.ctex"]
 
 [params]
 
