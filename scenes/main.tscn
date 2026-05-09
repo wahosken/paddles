@@ -25,6 +25,8 @@
 [ext_resource type="Texture2D" uid="uid://sf15ejwuwbyk" path="res://assets/joystick_base.png" id="16_y6deb"]
 [ext_resource type="Texture2D" uid="uid://b3d4pdfixkyn5" path="res://assets/joystick_knob.png" id="17_og1vs"]
 [ext_resource type="Texture2D" uid="uid://dljti4kxh2wnb" path="res://assets/pause_pressed.png" id="17_pm3ni"]
+[ext_resource type="FontFile" uid="uid://bhyxo5lata4bp" path="res://assets/font/PublicPixel-rv0pA.ttf" id="21_vxglm"]
+[ext_resource type="Theme" uid="uid://bxt7wfxy6lx7j" path="res://assets/font/paddles_ui_theme.tres" id="22_2f3dj"]
 [ext_resource type="AudioStream" uid="uid://e1l5mewqran3" path="res://audio/paddles audio_wall_hit.wav" id="26_2wyq8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
@@ -32,27 +34,8 @@ size = Vector2(10, 100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jyhfs"]
 
-[sub_resource type="SystemFont" id="SystemFont_og1vs"]
-
-[sub_resource type="SystemFont" id="SystemFont_2wyq8"]
-
-[sub_resource type="SystemFont" id="SystemFont_vxglm"]
-
-[sub_resource type="SystemFont" id="SystemFont_2f3dj"]
-
-[sub_resource type="SystemFont" id="SystemFont_yq6so"]
-
-[sub_resource type="SystemFont" id="SystemFont_fv21b"]
-
-[sub_resource type="SystemFont" id="SystemFont_tel4y"]
-
-[sub_resource type="SystemFont" id="SystemFont_qkpxi"]
-
-[sub_resource type="SystemFont" id="SystemFont_5q0nq"]
-
-[sub_resource type="SystemFont" id="SystemFont_dgi5k"]
-
-[sub_resource type="SystemFont" id="SystemFont_j8jky"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2f3dj"]
+bg_color = Color(0, 0, 0, 0.69803923)
 
 [node name="Main" type="Node2D" unique_id=377735369]
 script = ExtResource("1_jyhfs")
@@ -93,7 +76,6 @@ position = Vector2(400, 220)
 script = ExtResource("3_sugp2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Ball" unique_id=1691946696]
-position = Vector2(400, 225)
 shape = SubResource("RectangleShape2D_jyhfs")
 
 [node name="BallVisual" type="Sprite2D" parent="Ball" unique_id=1308677849]
@@ -117,17 +99,23 @@ position = Vector2(400, 225)
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1196932859]
 
-[node name="PlayerScoreImage" type="TextureRect" parent="UI" unique_id=205737546]
-offset_left = 350.0
+[node name="PlayerScoreLabel" type="Label" parent="UI" unique_id=1595642600]
+offset_left = 360.0
 offset_top = 20.0
-offset_right = 370.0
-offset_bottom = 40.0
+offset_right = 380.0
+offset_bottom = 43.0
+theme = ExtResource("22_2f3dj")
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
 
-[node name="EnemyScoreImage" type="TextureRect" parent="UI" unique_id=1639598613]
+[node name="EnemyScoreLabel" type="Label" parent="UI" unique_id=498369558]
 offset_left = 420.0
 offset_top = 20.0
 offset_right = 440.0
-offset_bottom = 40.0
+offset_bottom = 43.0
+theme = ExtResource("22_2f3dj")
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
 
 [node name="MessageLabel" type="Label" parent="UI" unique_id=647818161]
 anchors_preset = 8
@@ -135,31 +123,18 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -169.0
-offset_top = -93.0
-offset_right = 169.0
-offset_bottom = 19.5
+offset_left = -170.0
+offset_top = -60.0
+offset_right = 167.99994
+offset_bottom = 52.500122
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = SubResource("SystemFont_og1vs")
-theme_override_font_sizes/font_size = 28
+theme = ExtResource("22_2f3dj")
+theme_override_constants/paragraph_spacing = 10
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
-
-[node name="ControlsLabel" type="Label" parent="UI" unique_id=1656369522]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -169.0
-offset_top = 75.0
-offset_right = 169.00006
-offset_bottom = 187.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = SubResource("SystemFont_2wyq8")
-theme_override_font_sizes/font_size = 16
-horizontal_alignment = 1
+vertical_alignment = 3
 
 [node name="UIHide" type="Control" parent="UI" unique_id=554599682]
 layout_mode = 3
@@ -227,81 +202,122 @@ offset_left = 20.0
 offset_top = 20.0
 offset_right = 52.0
 offset_bottom = 52.0
+scale = Vector2(1.25, 1.25)
 texture_normal = ExtResource("16_jscy8")
 texture_pressed = ExtResource("17_pm3ni")
 script = ExtResource("6_tipki")
 
-[node name="PauseMenu" type="Panel" parent="UI" unique_id=597173623]
+[node name="GameTitle" type="Label" parent="UI" unique_id=1158331823]
 visible = false
-self_modulate = Color(0, 0, 0, 0.5882353)
-offset_right = 800.0
-offset_bottom = 450.0
-
-[node name="GameTitle" type="Label" parent="UI/PauseMenu" unique_id=246437617]
-layout_mode = 0
-offset_left = 325.0
-offset_top = 40.0
-offset_right = 478.0
-offset_bottom = 63.0
-theme_override_fonts/font = SubResource("SystemFont_vxglm")
-theme_override_font_sizes/font_size = 36
+offset_left = 316.0
+offset_top = 65.0
+offset_right = 484.0
+offset_bottom = 89.00003
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 24
 text = "Paddles"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseMenuContent" type="VBoxContainer" parent="UI/PauseMenu" unique_id=1984809021]
+[node name="PauseMenu" type="Panel" parent="UI" unique_id=597173623]
+self_modulate = Color(0, 0, 0, 0.5882353)
+offset_right = 800.0
+offset_bottom = 450.0
+theme = ExtResource("22_2f3dj")
+
+[node name="GameTitlePause" type="Label" parent="UI/PauseMenu" unique_id=246437617]
+layout_mode = 0
+offset_left = 316.0
+offset_top = 65.0
+offset_right = 484.0
+offset_bottom = 89.00003
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 24
+text = "Paddles"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseMenuPanel" type="Panel" parent="UI/PauseMenu" unique_id=233355720]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -55.0
-offset_top = -95.0
-offset_right = 55.0
-offset_bottom = 128.00006
+offset_left = -100.0
+offset_top = -110.0
+offset_right = 100.0
+offset_bottom = 136.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_2f3dj")
+
+[node name="PauseMenuContent" type="VBoxContainer" parent="UI/PauseMenu/PauseMenuPanel" unique_id=1984809021]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -59.0
+offset_top = 10.0
+offset_right = 59.0
+offset_bottom = 236.0
+grow_horizontal = 2
 alignment = 1
 
-[node name="PauseTitle" type="Label" parent="UI/PauseMenu/PauseMenuContent" unique_id=40696390]
+[node name="PauseTitle" type="Label" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=40696390]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_2f3dj")
-text = "PAUSED"
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 12
+text = "PAUSED
+"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="UI/PauseMenu/PauseMenuContent" unique_id=1000098638]
+[node name="ResumeButton" type="Button" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=1000098638]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_yq6so")
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 10
 text = "Resume"
 
-[node name="RestartButton" type="Button" parent="UI/PauseMenu/PauseMenuContent" unique_id=1855843963]
+[node name="RestartButton" type="Button" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=1855843963]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_fv21b")
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 10
 text = "Restart"
 
-[node name="BackgroundOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuContent" unique_id=2093625006]
+[node name="BackgroundOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=2093625006]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_tel4y")
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 10
 alignment = 1
 
-[node name="MuteButton" type="Button" parent="UI/PauseMenu/PauseMenuContent" unique_id=513494723]
+[node name="MuteButton" type="Button" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=513494723]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_qkpxi")
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 10
 text = "Mute"
 
-[node name="ControlOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuContent" unique_id=1372926283]
+[node name="ControlOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=1372926283]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_5q0nq")
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 10
 alignment = 1
 
-[node name="VolumeLabel" type="Label" parent="UI/PauseMenu/PauseMenuContent" unique_id=1095605888]
+[node name="VolumeLabel" type="Label" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=1095605888]
 layout_mode = 2
-theme_override_fonts/font = SubResource("SystemFont_dgi5k")
+size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 10
 text = "Volume"
 
-[node name="VolumeSlider" type="HSlider" parent="UI/PauseMenu/PauseMenuContent" unique_id=84117645]
+[node name="VolumeSlider" type="HSlider" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=84117645]
 layout_mode = 2
+size_flags_vertical = 6
 value = 80.0
 
 [node name="GameByLabel" type="Label" parent="UI/PauseMenu" unique_id=886218114]
@@ -310,8 +326,8 @@ offset_left = 325.0
 offset_top = 420.0
 offset_right = 478.0
 offset_bottom = 443.0
-theme_override_fonts/font = SubResource("SystemFont_j8jky")
-theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = ExtResource("21_vxglm")
+theme_override_font_sizes/font_size = 8
 text = "Game by Wahosken"
 horizontal_alignment = 1
 vertical_alignment = 1

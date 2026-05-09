@@ -5,10 +5,6 @@ const WINNING_SCORE := 3
 const SHAKE_DURATION := 0.20
 const SHAKE_STRENGTH := 2.0
 
-const SCORE_SHEET := preload("res://assets/paddles_font.png")
-const SCORE_CELL_WIDTH := 32
-const SCORE_CELL_HEIGHT := 32
-
 const JOYSTICK_LEFT_POSITION := Vector2(20.0, 280.0)
 const JOYSTICK_RIGHT_POSITION := Vector2(640.0, 280.0)
 
@@ -21,8 +17,6 @@ var can_restart_after_game_over := false
 var can_move_paddles := false
 var can_start_from_start_screen := false
 
-var score_textures: Array[AtlasTexture] = []
-
 var background_textures: Array[Texture2D] = [
 	preload("res://assets/backgrounds/classic.png"),
 	preload("res://assets/backgrounds/forest.png"),
@@ -34,17 +28,19 @@ var background_textures: Array[Texture2D] = [
 @onready var player_paddle = $PlayerPaddle
 @onready var enemy_paddle = $EnemyPaddle
 
-@onready var player_score_image: TextureRect = $UI/PlayerScoreImage
-@onready var enemy_score_image: TextureRect = $UI/EnemyScoreImage
+@onready var player_score_label: Label = $UI/PlayerScoreLabel
+@onready var enemy_score_label: Label = $UI/EnemyScoreLabel
+
+@onready var game_title: Label = $UI/GameTitle
 
 @onready var pause_button: TextureButton = $UI/PauseButton
 @onready var pause_menu: Control = $UI/PauseMenu
-@onready var resume_button: Button = $UI/PauseMenu/PauseMenuContent/ResumeButton
-@onready var restart_button: Button = $UI/PauseMenu/PauseMenuContent/RestartButton
-@onready var background_option_button: OptionButton = $UI/PauseMenu/PauseMenuContent/BackgroundOptionButton
-@onready var mute_button: Button = $UI/PauseMenu/PauseMenuContent/MuteButton
-@onready var control_option_button: OptionButton = $UI/PauseMenu/PauseMenuContent/ControlOptionButton
-@onready var volume_slider: HSlider = $UI/PauseMenu/PauseMenuContent/VolumeSlider
+@onready var resume_button: Button = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/ResumeButton
+@onready var restart_button: Button = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/RestartButton
+@onready var background_option_button: OptionButton = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/BackgroundOptionButton
+@onready var mute_button: Button = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/MuteButton
+@onready var control_option_button: OptionButton = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/ControlOptionButton
+@onready var volume_slider: HSlider = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/VolumeSlider
 
 @onready var background: Sprite2D = $Background
 
@@ -64,12 +60,12 @@ enum GameState {
 }
 
 enum ControlMode {
-	BUTTONS,
+	JOYSTICK_RIGHT,
 	JOYSTICK_LEFT,
-	JOYSTICK_RIGHT
+	BUTTONS
 }
 
-var control_mode: ControlMode = ControlMode.BUTTONS
+var control_mode: ControlMode = ControlMode.JOYSTICK_RIGHT
 
 var game_state: GameState = GameState.START_SCREEN
 var player_score := 0
@@ -90,7 +86,6 @@ var can_pause := false
 
 @onready var ball = $Ball
 @onready var message_label: Label = $UI/MessageLabel
-@onready var controls_label: Label = $UI/ControlsLabel
 @onready var game_camera = $GameCamera
 @onready var score_sound = $ScoreSound
 @onready var win_sound = $WinSound
@@ -100,7 +95,6 @@ var can_pause := false
 @onready var wall_hit_sound: AudioStreamPlayer = $WallHitSound
 
 func _ready():
-	create_score_textures()
 	setup_pause_menu()
 	_on_volume_changed(master_volume)
 	update_control_visibility()
@@ -205,15 +199,16 @@ func show_start_screen():
 	can_start_round = false
 	can_move_paddles = false
 	
-	message_label.text = "Press anywhere to start\n\nKeyboard: WASD / Arrow Keys\nTouch: Buttons or Joystick\nPause: Esc or Pause Button"
+	message_label.text = "\n\nPress anywhere to start\n\n\n\n\nKeyboard: WASD / Arrow Keys\nTouch: Joystick or Buttons\nPause: Esc or Pause Button"
 	message_label.visible = true
+	game_title.visible = true
 	
 	ball.reset_ball()
 	reset_paddles()
 	
 	await get_tree().create_timer(ROUND_INPUT_DELAY).timeout
 	
-	if game_state == GameState.START_SCREEN and not is_paused:
+	if game_state == GameState.START_SCREEN:
 		can_start_round = true
 
 func start_round():
@@ -221,6 +216,7 @@ func start_round():
 	can_start_round = false
 	can_move_paddles = true
 	message_label.visible = false
+	game_title.visible = false
 	ball.start_ball()
 
 func _on_player_scored():
@@ -262,12 +258,13 @@ func show_point_pause(message: String):
 	ball.reset_ball()
 	reset_paddles()
 	
-	message_label.text = message + "\nPress anywhere for next round"
+	message_label.text = message + "\n\n\n\n\nPress anything for next round"
 	message_label.visible = true
+	game_title.visible = false
 	
 	await get_tree().create_timer(ROUND_INPUT_DELAY).timeout
 	
-	if game_state == GameState.POINT_PAUSE and not is_paused:
+	if game_state == GameState.POINT_PAUSE:
 		can_start_round = true
 
 func show_game_over(message: String):
@@ -278,12 +275,13 @@ func show_game_over(message: String):
 	ball.reset_ball()
 	reset_paddles()
 	
-	message_label.text = message + "\nPress anywhere to restart"
+	message_label.text = message + "\n\n\n\n\nPress anything to start a new game"
 	message_label.visible = true
+	game_title.visible = true
 	
 	await get_tree().create_timer(GAME_OVER_RESTART_DELAY).timeout
 	
-	if game_state == GameState.GAME_OVER and not is_paused:
+	if game_state == GameState.GAME_OVER:
 		can_restart_after_game_over = true
 
 func reset_game():
@@ -296,8 +294,8 @@ func reset_game():
 	reset_paddles()
 
 func update_score_labels():
-	player_score_image.texture = score_textures[player_score]
-	enemy_score_image.texture = score_textures[enemy_score]
+	player_score_label.text = str(player_score)
+	enemy_score_label.text = str(enemy_score)
 
 func shake_screen():
 	shake_time = SHAKE_DURATION
@@ -309,21 +307,6 @@ func _on_paddle_hit():
 func _on_wall_hit():
 	wall_hit_sound.pitch_scale = randf_range(0.95, 1.05)
 	wall_hit_sound.play()
-
-func create_score_textures():
-	score_textures.clear()
-
-	for i in range(4):
-		var atlas_texture := AtlasTexture.new()
-		atlas_texture.atlas = SCORE_SHEET
-		atlas_texture.region = Rect2(
-			i * SCORE_CELL_WIDTH,
-			0,
-			SCORE_CELL_WIDTH,
-			SCORE_CELL_HEIGHT
-		)
-
-		score_textures.append(atlas_texture)
 
 func setup_pause_menu():
 	pause_button.pressed.connect(toggle_pause)
@@ -347,9 +330,9 @@ func setup_pause_menu():
 	
 
 	control_option_button.clear()
-	control_option_button.add_item("Buttons", ControlMode.BUTTONS)
-	control_option_button.add_item("Joystick Left", ControlMode.JOYSTICK_LEFT)
 	control_option_button.add_item("Joystick Right", ControlMode.JOYSTICK_RIGHT)
+	control_option_button.add_item("Joystick Left", ControlMode.JOYSTICK_LEFT)
+	control_option_button.add_item("Buttons", ControlMode.BUTTONS)
 	control_option_button.select(control_mode)
 	
 func toggle_pause():

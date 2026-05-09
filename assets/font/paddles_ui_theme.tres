@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://bxt7wfxy6lx7j"]
+
+[ext_resource type="FontFile" uid="uid://bhyxo5lata4bp" path="res://assets/font/PublicPixel-rv0pA.ttf" id="1_go7o6"]
+
+[resource]
+default_font = ExtResource("1_go7o6")
+default_font_size = 10
