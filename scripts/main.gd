@@ -144,6 +144,11 @@ func _input(event):
 		if can_pause:
 			toggle_pause()
 		return
+		
+	if event.is_action_pressed("ui_cancel"):
+		if is_paused:
+			resume_game()
+			return
 	
 	if event is InputEventMouseButton and event.pressed:
 		handle_press_anywhere()
@@ -311,6 +316,7 @@ func pause_game():
 		ball.pause_ball()
 
 	pause_menu.visible = true
+	resume_button.grab_focus()
 
 func resume_game():
 	is_paused = false
