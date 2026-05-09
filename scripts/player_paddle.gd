@@ -23,7 +23,7 @@ func _ready():
 	previous_position = position
 
 func _process(delta):
-	if main.is_paused:
+	if main.is_paused or not main.can_move_paddles:
 		paddle_velocity = Vector2.ZERO
 		previous_position = position
 		return

@@ -50,12 +50,10 @@ func check_paddle_hit():
 		if not is_touching_paddle(paddle):
 			continue
 
-		# Only bounce off the player paddle if the ball is moving left.
 		if paddle.name == "PlayerPaddle" and direction.x < 0.0:
 			bounce_from_paddle(paddle)
 			return
 
-		# Only bounce off the enemy paddle if the ball is moving right.
 		if paddle.name == "EnemyPaddle" and direction.x > 0.0:
 			bounce_from_paddle(paddle)
 			return

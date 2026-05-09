@@ -12,6 +12,15 @@ const SCORE_CELL_HEIGHT := 32
 const JOYSTICK_LEFT_POSITION := Vector2(20.0, 280.0)
 const JOYSTICK_RIGHT_POSITION := Vector2(640.0, 280.0)
 
+const START_SCREEN_DELAY := 0.75
+const GAME_OVER_RESTART_DELAY := 0.75
+const ROUND_INPUT_DELAY := 0.75
+
+var can_start_round := false
+var can_restart_after_game_over := false
+var can_move_paddles := false
+var can_start_from_start_screen := false
+
 var score_textures: Array[AtlasTexture] = []
 
 var background_textures: Array[Texture2D] = [
@@ -176,25 +185,39 @@ func handle_press_anywhere():
 		return
 
 	if game_state == GameState.START_SCREEN:
-		start_round()
+		if can_start_round:
+			start_round()
+
 	elif game_state == GameState.POINT_PAUSE:
-		start_round()
+		if can_start_round:
+			start_round()
+
 	elif game_state == GameState.GAME_OVER:
-		reset_game()
-		show_start_screen()
+		if can_restart_after_game_over:
+			reset_game()
+			show_start_screen()
 
 func show_start_screen():
 	game_state = GameState.START_SCREEN
-	message_label.text = "Press anywhere to start"
-	controls_label.text = "Keyboard: WASD / Arrow Keys\nTouch: Buttons or Joystick\nPause: Esc or Pause Button"
+	can_start_round = false
+	can_move_paddles = false
+	
+	message_label.text = "Press anywhere to start\n\nKeyboard: WASD / Arrow Keys\nTouch: Buttons or Joystick\nPause: Esc or Pause Button"
 	message_label.visible = true
-	controls_label.visible = true
+	
 	ball.reset_ball()
+	reset_paddles()
+	
+	await get_tree().create_timer(ROUND_INPUT_DELAY).timeout
+	
+	if game_state == GameState.START_SCREEN and not is_paused:
+		can_start_round = true
 
 func start_round():
 	game_state = GameState.PLAYING
+	can_start_round = false
+	can_move_paddles = true
 	message_label.visible = false
-	controls_label.visible = false
 	ball.start_ball()
 
 func _on_player_scored():
@@ -230,20 +253,41 @@ func _on_enemy_scored():
 
 func show_point_pause(message: String):
 	game_state = GameState.POINT_PAUSE
+	can_start_round = false
+	can_move_paddles = false
+	
 	ball.reset_ball()
-	message_label.text = message
+	reset_paddles()
+	
+	message_label.text = message + "\nPress anywhere for next round"
 	message_label.visible = true
+	
+	await get_tree().create_timer(ROUND_INPUT_DELAY).timeout
+	
+	if game_state == GameState.POINT_PAUSE and not is_paused:
+		can_start_round = true
 
 func show_game_over(message: String):
 	game_state = GameState.GAME_OVER
+	can_restart_after_game_over = false
+	can_move_paddles = false
+	
 	ball.reset_ball()
 	reset_paddles()
-	message_label.text = message + ""
+	
+	message_label.text = message + "\nPress anywhere to restart"
 	message_label.visible = true
+	
+	await get_tree().create_timer(GAME_OVER_RESTART_DELAY).timeout
+	
+	if game_state == GameState.GAME_OVER and not is_paused:
+		can_restart_after_game_over = true
 
 func reset_game():
 	player_score = 0
 	enemy_score = 0
+	can_start_round = false
+	can_move_paddles = false
 	update_score_labels()
 	ball.reset_ball()
 	reset_paddles()
