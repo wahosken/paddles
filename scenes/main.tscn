@@ -25,6 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://sf15ejwuwbyk" path="res://assets/joystick_base.png" id="16_y6deb"]
 [ext_resource type="Texture2D" uid="uid://b3d4pdfixkyn5" path="res://assets/joystick_knob.png" id="17_og1vs"]
 [ext_resource type="Texture2D" uid="uid://dljti4kxh2wnb" path="res://assets/pause_pressed.png" id="17_pm3ni"]
+[ext_resource type="AudioStream" uid="uid://e1l5mewqran3" path="res://audio/paddles audio_wall_hit.wav" id="26_2wyq8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
 size = Vector2(10, 100)
@@ -328,13 +329,17 @@ stream = ExtResource("11_a8y0u")
 
 [node name="PaddleHitSound" type="AudioStreamPlayer" parent="." unique_id=1287392607]
 stream = ExtResource("11_trceg")
-volume_db = -9.869
+volume_db = -10.0
 
 [node name="WinSound" type="AudioStreamPlayer" parent="." unique_id=1883792143]
 stream = ExtResource("12_a8y0u")
 
 [node name="LoseSound" type="AudioStreamPlayer" parent="." unique_id=657066307]
 stream = ExtResource("13_trceg")
+
+[node name="WallHitSound" type="AudioStreamPlayer" parent="." unique_id=171590980]
+stream = ExtResource("26_2wyq8")
+volume_db = -5.0
 
 [connection signal="pressed" from="UI/UIHide/TouchControls/Up" to="UI" method="_on_up_pressed"]
 [connection signal="released" from="UI/UIHide/TouchControls/Up" to="UI" method="_on_up_released"]

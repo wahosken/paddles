@@ -27,6 +27,7 @@ var background_textures: Array[Texture2D] = [
 	preload("res://assets/backgrounds/classic.png"),
 	preload("res://assets/backgrounds/forest.png"),
 	preload("res://assets/backgrounds/royal.png"),
+	preload("res://assets/backgrounds/pearl.png"),
 	preload("res://assets/backgrounds/wahosken.png")
 ]
 
@@ -96,6 +97,7 @@ var can_pause := false
 @onready var paddle_hit_sound = $PaddleHitSound
 @onready var lose_sound = $LoseSound
 @onready var enemy_score_sound = $EnemyScoreSound
+@onready var wall_hit_sound: AudioStreamPlayer = $WallHitSound
 
 func _ready():
 	create_score_textures()
@@ -110,6 +112,7 @@ func _ready():
 	ball.player_scored.connect(_on_player_scored)
 	ball.enemy_scored.connect(_on_enemy_scored)
 	ball.paddle_hit.connect(_on_paddle_hit)
+	ball.wall_hit.connect(_on_wall_hit)
 	
 	virtual_joystick.joystick_pressed.connect(handle_press_anywhere)
 
@@ -303,6 +306,10 @@ func _on_paddle_hit():
 	paddle_hit_sound.pitch_scale = randf_range(0.9, 1.1)
 	paddle_hit_sound.play()
 
+func _on_wall_hit():
+	wall_hit_sound.pitch_scale = randf_range(0.95, 1.05)
+	wall_hit_sound.play()
+
 func create_score_textures():
 	score_textures.clear()
 
@@ -335,7 +342,9 @@ func setup_pause_menu():
 	background_option_button.add_item("Classic", 0)
 	background_option_button.add_item("Forest", 1)
 	background_option_button.add_item("Royal", 2)
-	background_option_button.add_item("Wahosken", 3)
+	background_option_button.add_item("Pearl", 3)
+	background_option_button.add_item("Wahosken", 4)
+	
 
 	control_option_button.clear()
 	control_option_button.add_item("Buttons", ControlMode.BUTTONS)

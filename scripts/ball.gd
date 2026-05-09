@@ -20,6 +20,7 @@ var is_active := false
 signal player_scored
 signal enemy_scored
 signal paddle_hit
+signal wall_hit
 
 func _ready():
 	reset_ball()
@@ -38,10 +39,12 @@ func check_wall_bounce():
 	if position.y <= BALL_RADIUS:
 		position.y = BALL_RADIUS
 		direction.y = abs(direction.y)
+		wall_hit.emit()
 
 	if position.y >= SCREEN_HEIGHT - BALL_RADIUS:
 		position.y = SCREEN_HEIGHT - BALL_RADIUS
 		direction.y = -abs(direction.y)
+		wall_hit.emit()
 
 func check_paddle_hit():
 	var paddles := get_tree().get_nodes_in_group("paddles")
