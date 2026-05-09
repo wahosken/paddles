@@ -12,13 +12,15 @@ const START_SCREEN_DELAY := 0.75
 const GAME_OVER_RESTART_DELAY := 0.75
 const ROUND_INPUT_DELAY := 0.75
 
+const AUTOPLAY_DELAY := 0.65
+
 var can_start_round := false
 var can_restart_after_game_over := false
 var can_move_paddles := false
 var can_start_from_start_screen := false
 
 var background_textures: Array[Texture2D] = [
-	preload("res://assets/backgrounds/classic.png"),
+	preload("res://assets/backgrounds/default.png"),
 	preload("res://assets/backgrounds/forest.png"),
 	preload("res://assets/backgrounds/royal.png"),
 	preload("res://assets/backgrounds/pearl.png"),
@@ -37,6 +39,7 @@ var background_textures: Array[Texture2D] = [
 @onready var pause_menu: Control = $UI/PauseMenu
 @onready var resume_button: Button = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/ResumeButton
 @onready var restart_button: Button = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/RestartButton
+@onready var mode_option_button: OptionButton = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/ModeOptionButton
 @onready var background_option_button: OptionButton = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/BackgroundOptionButton
 @onready var mute_button: Button = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/MuteButton
 @onready var control_option_button: OptionButton = $UI/PauseMenu/PauseMenuPanel/PauseMenuContent/ControlOptionButton
@@ -64,6 +67,14 @@ enum ControlMode {
 	JOYSTICK_LEFT,
 	BUTTONS
 }
+
+enum PlayMode {
+	CLASSIC,
+	UNLIMITED,
+	AUTOPLAY
+}
+
+var play_mode: PlayMode = PlayMode.CLASSIC
 
 var control_mode: ControlMode = ControlMode.JOYSTICK_RIGHT
 
@@ -211,6 +222,12 @@ func show_start_screen():
 	if game_state == GameState.START_SCREEN:
 		can_start_round = true
 
+	if play_mode == PlayMode.UNLIMITED:
+		message_label.text = "Unlimited Mode\nPlay forever\n\n\n\nPress anywhere to start"
+
+	elif play_mode == PlayMode.AUTOPLAY:
+		message_label.text = "Autoplay mode\nWatch forever\n\n\n\nPress anywhere to start"
+
 func start_round():
 	game_state = GameState.PLAYING
 	can_start_round = false
@@ -228,12 +245,13 @@ func _on_player_scored():
 	shake_screen()
 	score_sound.play()
 
-	if player_score >= WINNING_SCORE:
+	if play_mode == PlayMode.AUTOPLAY:
+		auto_start_next_ai_round()
+	elif play_mode == PlayMode.CLASSIC and player_score >= WINNING_SCORE:
 		win_sound.play()
 		show_game_over("You win!")
 	else:
 		show_point_pause("You scored!")
-		
 
 func _on_enemy_scored():
 	if game_state != GameState.PLAYING:
@@ -244,7 +262,9 @@ func _on_enemy_scored():
 	shake_screen()
 	enemy_score_sound.play()
 
-	if enemy_score >= WINNING_SCORE:
+	if play_mode == PlayMode.AUTOPLAY:
+		auto_start_next_ai_round()
+	elif play_mode == PlayMode.CLASSIC and enemy_score >= WINNING_SCORE:
 		lose_sound.play()
 		show_game_over("Enemy wins!")
 	else:
@@ -314,6 +334,7 @@ func setup_pause_menu():
 
 	resume_button.pressed.connect(resume_game)
 	restart_button.pressed.connect(restart_match)
+	mode_option_button.item_selected.connect(_on_play_mode_selected)
 	background_option_button.item_selected.connect(_on_background_selected)
 	control_option_button.item_selected.connect(_on_control_mode_selected)
 	mute_button.pressed.connect(toggle_mute)
@@ -322,7 +343,7 @@ func setup_pause_menu():
 	volume_slider.value_changed.connect(_on_volume_changed)
 
 	background_option_button.clear()
-	background_option_button.add_item("Classic", 0)
+	background_option_button.add_item("Default", 0)
 	background_option_button.add_item("Forest", 1)
 	background_option_button.add_item("Royal", 2)
 	background_option_button.add_item("Pearl", 3)
@@ -334,6 +355,12 @@ func setup_pause_menu():
 	control_option_button.add_item("Joystick Left", ControlMode.JOYSTICK_LEFT)
 	control_option_button.add_item("Buttons", ControlMode.BUTTONS)
 	control_option_button.select(control_mode)
+
+	mode_option_button.clear()
+	mode_option_button.add_item("Classic", PlayMode.CLASSIC)
+	mode_option_button.add_item("Unlimited", PlayMode.UNLIMITED)
+	mode_option_button.add_item("Autoplay", PlayMode.AUTOPLAY)
+	mode_option_button.select(play_mode)
 	
 func toggle_pause():
 	if not can_pause:
@@ -364,6 +391,11 @@ func resume_game():
 func restart_match():
 	is_paused = false
 	pause_menu.visible = false
+	reset_game()
+	show_start_screen()
+	
+func _on_play_mode_selected(index: int):
+	play_mode = index as PlayMode
 	reset_game()
 	show_start_screen()
 	
@@ -433,3 +465,17 @@ func _on_volume_changed(value: float):
 		is_muted = false
 		AudioServer.set_bus_mute(master_bus_index, false)
 		mute_button.text = "Mute"
+
+func auto_start_next_ai_round():
+	game_state = GameState.POINT_PAUSE
+	can_start_round = false
+	can_move_paddles = false
+	
+	ball.reset_ball()
+	reset_paddles()
+	message_label.visible = false
+	
+	await get_tree().create_timer(AUTOPLAY_DELAY).timeout
+	
+	if play_mode == PlayMode.AUTOPLAY and game_state == GameState.POINT_PAUSE and not is_paused:
+		start_round()

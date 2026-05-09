@@ -2,7 +2,7 @@ extends Area2D
 
 const START_SPEED := 300.0
 const SPEED_INCREASE := 25.0
-const MAX_SPEED := 600.0
+const MAX_SPEED := 610.0
 
 const SCREEN_WIDTH := 800.0
 const SCREEN_HEIGHT := 450.0

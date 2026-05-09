@@ -27,10 +27,13 @@ func _process(delta):
 		paddle_velocity = Vector2.ZERO
 		previous_position = position
 		return
+		
+	if main.play_mode == main.PlayMode.AUTOPLAY:
+		move_as_ai(delta)
+		return
 	
 	move_direction = Vector2.ZERO
 
-	# Keyboard / Input Map controls always work.
 	if Input.is_action_pressed("move_up"):
 		move_direction.y -= 1.0
 
@@ -67,4 +70,48 @@ func _process(delta):
 func reset_position():
 	position = DEFAULT_POSITION
 	paddle_velocity = Vector2.ZERO
+	previous_position = position
+	
+func move_as_ai(delta):
+	var ball = main.ball
+
+	var difference_y: float = ball.position.y - position.y
+
+	if abs(difference_y) > 10.0:
+		position.y = move_toward(
+			position.y,
+			ball.position.y,
+			SPEED * 0.85 * delta
+		)
+
+	var home_x: float = DEFAULT_POSITION.x
+	var attack_x: float = 300.0
+	var defense_x: float = 35.0
+
+	var target_x: float = home_x
+
+	var ball_coming_toward_player: bool = ball.direction.x < 0.0
+	var ball_vertical_speed: float = abs(ball.direction.y * ball.speed)
+	var ball_is_close: bool = ball.position.x < 500.0
+
+	if ball_coming_toward_player:
+		if ball_vertical_speed > 220.0:
+			target_x = defense_x
+		elif ball_is_close:
+			target_x = attack_x
+		else:
+			target_x = home_x
+	else:
+		target_x = home_x
+
+	position.x = move_toward(
+		position.x,
+		target_x,
+		SPEED * 0.35 * delta
+	)
+
+	position.x = clamp(position.x, MIN_X, MAX_X)
+	position.y = clamp(position.y, PADDLE_HALF_HEIGHT, SCREEN_HEIGHT - PADDLE_HALF_HEIGHT)
+
+	paddle_velocity = (position - previous_position) / delta
 	previous_position = position

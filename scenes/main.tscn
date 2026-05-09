@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bcom6jtbwd3wj" path="res://scripts/main.gd" id="1_jyhfs"]
 [ext_resource type="Script" uid="uid://cjqq232kh4s01" path="res://scripts/player_paddle.gd" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://b34vt0aarky88" path="res://scripts/enemy_paddle.gd" id="2_0wfyh"]
-[ext_resource type="Texture2D" uid="uid://dn4s0bh0nvy7" path="res://assets/backgrounds/classic.png" id="2_og1vs"]
+[ext_resource type="Texture2D" uid="uid://dn4s0bh0nvy7" path="res://assets/backgrounds/default.png" id="2_og1vs"]
 [ext_resource type="Script" uid="uid://d15e6kqf502nj" path="res://scripts/ball.gd" id="3_sugp2"]
 [ext_resource type="Texture2D" uid="uid://dhl1opebyivva" path="res://assets/ball.png" id="5_o6xl0"]
 [ext_resource type="Texture2D" uid="uid://bx0yd48yxl8ir" path="res://assets/up.png" id="5_tefeu"]
@@ -12,7 +12,6 @@
 [ext_resource type="Texture2D" uid="uid://dp8u3iduq3sed" path="res://assets/up_pressed.png" id="8_jbj1t"]
 [ext_resource type="AudioStream" uid="uid://dqviipqyuxwge" path="res://audio/paddles audio_score.wav" id="10_eb6dy"]
 [ext_resource type="Texture2D" uid="uid://dnvpho26evxkp" path="res://assets/down_pressed.png" id="10_muem4"]
-[ext_resource type="AudioStream" uid="uid://buwclg75d5hx0" path="res://audio/paddles audio_enemy hit.wav" id="11_a8y0u"]
 [ext_resource type="Texture2D" uid="uid://ce1cgv0ntp2tt" path="res://assets/left.png" id="11_gqmmt"]
 [ext_resource type="AudioStream" uid="uid://dudptqf1snvnw" path="res://audio/paddles audio_hit.wav" id="11_trceg"]
 [ext_resource type="AudioStream" uid="uid://2vht00sp5rwh" path="res://audio/paddles audio_win.wav" id="12_a8y0u"]
@@ -27,7 +26,8 @@
 [ext_resource type="Texture2D" uid="uid://dljti4kxh2wnb" path="res://assets/pause_pressed.png" id="17_pm3ni"]
 [ext_resource type="FontFile" uid="uid://bhyxo5lata4bp" path="res://assets/font/PublicPixel-rv0pA.ttf" id="21_vxglm"]
 [ext_resource type="Theme" uid="uid://bxt7wfxy6lx7j" path="res://assets/font/paddles_ui_theme.tres" id="22_2f3dj"]
-[ext_resource type="AudioStream" uid="uid://e1l5mewqran3" path="res://audio/paddles audio_wall_hit.wav" id="26_2wyq8"]
+[ext_resource type="AudioStream" uid="uid://djlp1nj63x8gd" path="res://audio/paddles audio_enemy score.wav" id="24_2f3dj"]
+[ext_resource type="AudioStream" uid="uid://qdwww7322k8o" path="res://audio/paddles audio_wall hit.wav" id="28_yq6so"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7dm0k"]
 size = Vector2(10, 100)
@@ -287,6 +287,10 @@ theme_override_fonts/font = ExtResource("21_vxglm")
 theme_override_font_sizes/font_size = 10
 text = "Restart"
 
+[node name="ModeOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=202766407]
+layout_mode = 2
+alignment = 1
+
 [node name="BackgroundOptionButton" type="OptionButton" parent="UI/PauseMenu/PauseMenuPanel/PauseMenuContent" unique_id=2093625006]
 layout_mode = 2
 size_flags_vertical = 6
@@ -341,7 +345,7 @@ default_color = Color(1, 1, 1, 0.1882353)
 stream = ExtResource("10_eb6dy")
 
 [node name="EnemyScoreSound" type="AudioStreamPlayer" parent="." unique_id=1406049005]
-stream = ExtResource("11_a8y0u")
+stream = ExtResource("24_2f3dj")
 
 [node name="PaddleHitSound" type="AudioStreamPlayer" parent="." unique_id=1287392607]
 stream = ExtResource("11_trceg")
@@ -354,7 +358,7 @@ stream = ExtResource("12_a8y0u")
 stream = ExtResource("13_trceg")
 
 [node name="WallHitSound" type="AudioStreamPlayer" parent="." unique_id=171590980]
-stream = ExtResource("26_2wyq8")
+stream = ExtResource("28_yq6so")
 volume_db = -5.0
 
 [connection signal="pressed" from="UI/UIHide/TouchControls/Up" to="UI" method="_on_up_pressed"]
