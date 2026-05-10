@@ -100,22 +100,21 @@ position = Vector2(400, 225)
 [node name="UI" type="CanvasLayer" parent="." unique_id=1196932859]
 
 [node name="PlayerScoreLabel" type="Label" parent="UI" unique_id=1595642600]
-offset_left = 360.0
+offset_left = 100.0
 offset_top = 20.0
 offset_right = 380.0
 offset_bottom = 43.0
 theme = ExtResource("22_2f3dj")
 theme_override_font_sizes/font_size = 16
-horizontal_alignment = 1
+horizontal_alignment = 2
 
 [node name="EnemyScoreLabel" type="Label" parent="UI" unique_id=498369558]
 offset_left = 420.0
 offset_top = 20.0
-offset_right = 440.0
+offset_right = 700.0
 offset_bottom = 43.0
 theme = ExtResource("22_2f3dj")
 theme_override_font_sizes/font_size = 16
-horizontal_alignment = 1
 
 [node name="MessageLabel" type="Label" parent="UI" unique_id=647818161]
 anchors_preset = 8
@@ -220,6 +219,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PauseMenu" type="Panel" parent="UI" unique_id=597173623]
+visible = false
 self_modulate = Color(0, 0, 0, 0.5882353)
 offset_right = 800.0
 offset_bottom = 450.0

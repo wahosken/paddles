@@ -246,7 +246,7 @@ func _on_player_scored():
 	score_sound.play()
 
 	if play_mode == PlayMode.AUTOPLAY:
-		auto_start_next_ai_round()
+		auto_start_next_autoplay_round()
 	elif play_mode == PlayMode.CLASSIC and player_score >= WINNING_SCORE:
 		win_sound.play()
 		show_game_over("You win!")
@@ -263,7 +263,7 @@ func _on_enemy_scored():
 	enemy_score_sound.play()
 
 	if play_mode == PlayMode.AUTOPLAY:
-		auto_start_next_ai_round()
+		auto_start_next_autoplay_round()
 	elif play_mode == PlayMode.CLASSIC and enemy_score >= WINNING_SCORE:
 		lose_sound.play()
 		show_game_over("Enemy wins!")
@@ -312,6 +312,10 @@ func reset_game():
 	update_score_labels()
 	ball.reset_ball()
 	reset_paddles()
+	
+func reset_autoplay_paddles():
+	player_paddle.reset_position()
+	enemy_paddle.reset_position()
 
 func update_score_labels():
 	player_score_label.text = str(player_score)
@@ -466,13 +470,13 @@ func _on_volume_changed(value: float):
 		AudioServer.set_bus_mute(master_bus_index, false)
 		mute_button.text = "Mute"
 
-func auto_start_next_ai_round():
+func auto_start_next_autoplay_round():
 	game_state = GameState.POINT_PAUSE
 	can_start_round = false
 	can_move_paddles = false
 	
 	ball.reset_ball()
-	reset_paddles()
+	reset_autoplay_paddles()
 	message_label.visible = false
 	
 	await get_tree().create_timer(AUTOPLAY_DELAY).timeout
